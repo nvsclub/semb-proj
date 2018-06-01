@@ -132,8 +132,6 @@ def background_light(light_flag):
 
     
 
-
-
 string_queue = queue.Queue()
 listening_thread = threading.Thread(target=listening, args=(string_queue,))
 listening_thread.start()
@@ -145,7 +143,8 @@ processing_thread.start()
 back_music_thread = threading.Thread(target=background_music, args=(speaker_flag,))
 back_music_thread.start()
 
-background_light
+background_light_thread = threading.Thread(target=background_music, args=(speaker_flag,))
+background_light_thread.start()
 
 
 '''a = 0
