@@ -60,24 +60,34 @@ def string_processing(string_queue):
   choco_bar_motor_flag.set()
   coke_motor_flag = threading.Event()
   coke_motor_flag.set()
+  gum_motor_flag = threading.Event()
+  gum_motor_flag.set()
+
+  hello_track = vlc.MediaPlayer("hello.mp3")
 
   while True:
     if not string_queue.empty():
       string = string_queue.get()
       # check for hello entry
       if string in hello:
-        # say hello back?
-        pass
-      # check for chocobar entry
+        speaker_flag.set()
+        hello_track.play()
+        time.sleep(3)
+        hello_track.stop()
+        speaker_flag.clear()
+      # check machine vending
       elif string in chocobar:
         th = threading.Thread(target=turn_on, args=(choco_bar_motor, 1, choco_bar_motor_flag))
         th.start()
       elif string in coke:
         th = threading.Thread(target=turn_on, args=(coke_motor, 1, coke_motor_flag))
         th.start()
+      elif string in gum:
+        th = threading.Thread(target=turn_on, args=(gum_motor, 1, gum_motor_flag))
+        th.start()
 
 def background_music(speaker_flag):
-  p = vlc.MediaPlayer("file:///path/to/totowhilemyguitargentlywheeps.mp3")
+  p = vlc.MediaPlayer("blackholesun.mp3")
   p.play()
 
   while True:
@@ -100,8 +110,8 @@ back_music_thread = threading.Thread(target=background_music, args=(speaker_flag
 back_music_thread.start()
 
 
-a = 0
+'''a = 0
 while 1:
   if a != string_queue.qsize():
     print(list(string_queue.queue))
-    a = string_queue.qsize()
+    a = string_queue.qsize()'''
