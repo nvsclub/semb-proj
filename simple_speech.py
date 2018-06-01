@@ -8,6 +8,8 @@ import time
 import vlc
 
 
+GPIO.cleanup()
+
 pin_outs = [8, 10, 12, 16]
 pin_ins = [18]
 choco_bar_motor = 8
@@ -19,7 +21,7 @@ background_light_led = 16
 light_button = 18
 
 hello = ['hello', 'alo']
-chocobar = ['chocobar', 'Google bar', 'chocolate']
+chocobar = ['chocobar', 'Google', 'bar', 'chocolate']
 coke = ['Coca-Cola', 'coke', 'cocaine']
 gum = ['gum']
 
@@ -62,7 +64,7 @@ def turn_on(port_id, time_sec, resource_flag):
   resource_flag.clear()
 
 
-def string_processing(string_queue):
+def string_processing(string_queue, speaker_flag):
   # start flag usage to manage resources
   choco_bar_motor_flag = threading.Event()
   choco_bar_motor_flag.set()
@@ -76,21 +78,25 @@ def string_processing(string_queue):
   while True:
     if not string_queue.empty():
       string = string_queue.get()
+      word_list = string.split()
+      print(word_list, hello)
+      print(any(word_list == x for x in hello))
       # check for hello entry
-      if string in hello:
-        speaker_flag.set()
+      if any(w == x for x in hello for w in word_list):
+        print('finkel')
+        speaker_flag.clear()
         hello_track.play()
         time.sleep(3)
         hello_track.stop()
-        speaker_flag.clear()
+        speaker_flag.set()
       # check machine vending
-      elif string in chocobar:
+      elif any(w == x for x in chocobar for w in word_list):
         th = threading.Thread(target=turn_on, args=(choco_bar_motor, 1, choco_bar_motor_flag))
         th.start()
-      elif string in coke:
+      elif any(w == x for x in coke for w in word_list):
         th = threading.Thread(target=turn_on, args=(coke_motor, 1, coke_motor_flag))
         th.start()
-      elif string in gum:
+      elif any(w == x for x in gum for w in word_list):
         th = threading.Thread(target=turn_on, args=(gum_motor, 1, gum_motor_flag))
         th.start()
 
@@ -106,28 +112,22 @@ def background_music(speaker_flag):
 
 
 def background_light(light_flag):  
-
-  GPIO.output(port_id,GPIO.HIGH)
-  time.sleep(time_sec)
-  GPIO.output(port_id,GPIO.LOW)
-
-
   while True:
     input_value = GPIO.input(light_button)
     if not light_flag.isSet():
       while light_flag.isSet():
-        GPIO.output(port_id,GPIO.HIGH)
+        GPIO.output(background_light_led,GPIO.HIGH)
         time.sleep(0.5)
-        GPIO.output(port_id,GPIO.LOW)
+        GPIO.output(background_light_led,GPIO.LOW)
         time.sleep(0.5)
     elif input_value == False:
-      GPIO.output(port_id,GPIO.HIGH)
+      GPIO.output(background_light_led,GPIO.HIGH)
       while c < 50:
         if not light_flag.isSet():
           break
         time.sleep(0.1)
         c += 1
-      GPIO.output(port_id,GPIO.LOW)
+      GPIO.output(background_light_led,GPIO.LOW)
 
 
     
@@ -137,13 +137,15 @@ listening_thread = threading.Thread(target=listening, args=(string_queue,))
 listening_thread.start()
 
 speaker_flag = threading.Event()
+speaker_flag.set()
 processing_thread = threading.Thread(target=string_processing, args=(string_queue, speaker_flag))
 processing_thread.start()
 
 back_music_thread = threading.Thread(target=background_music, args=(speaker_flag,))
 back_music_thread.start()
 
-background_light_thread = threading.Thread(target=background_music, args=(speaker_flag,))
+light_flag = threading.Event()
+background_light_thread = threading.Thread(target=background_light, args=(light_flag,))
 background_light_thread.start()
 
 
