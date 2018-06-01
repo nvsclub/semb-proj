@@ -133,22 +133,23 @@ def background_music(speaker_flag):
             p.play()
 
 def background_light(light_flag):
-    while True:
-        input_value = GPIO.input(light_button)
+  while True:
+    input_value = GPIO.input(light_button)
+    if not light_flag.isSet():
+      while light_flag.isSet():
+        GPIO.output(background_light_led,GPIO.HIGH)
+        time.sleep(0.5)
+        GPIO.output(background_light_led,GPIO.LOW)
+        time.sleep(0.5)
+    elif input_value == 1:
+      GPIO.output(background_light_led,GPIO.HIGH)
+      c = 0
+      while c < 3:
         if not light_flag.isSet():
-            while light_flag.isSet():
-                GPIO.output(background_light_led, GPIO.HIGH)
-                time.sleep(0.5)
-                GPIO.output(background_light_led, GPIO.LOW)
-                time.sleep(0.5)
-        elif input_value == False:
-            GPIO.output(background_light_led, GPIO.HIGH)
-            while c < 50:
-                if not light_flag.isSet():
-                    break
-                time.sleep(0.1)
-                c += 1
-            GPIO.output(background_light_led, GPIO.LOW)
+          break
+        time.sleep(0.1)
+        c += 1
+      GPIO.output(background_light_led,GPIO.LOW)
 
 
 ##################################
