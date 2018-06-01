@@ -8,19 +8,27 @@ import time
 import vlc
 
 
-pin_outs = [15, 16]
+pin_outs = [8, 10, 12, 16]
+pin_ins = [18]
 choco_bar_motor = 8
 coke_motor = 10
 gum_motor = 12
 
+background_light_led = 16
+
+light_button = 18
+
 hello = ['hello', 'alo']
 chocobar = ['chocobar', 'Google bar', 'chocolate']
 coke = ['Coca-Cola', 'coke', 'cocaine']
+gum = ['gum']
 
 # setup output pins
 GPIO.setmode(GPIO.BOARD)
 for pin in pin_outs:
   GPIO.setup(pin, GPIO.OUT)
+for pin in pin_ins:
+  GPIO.setup(pin, GPIO.IN)
 
 # listening thread
 ## gets all the recognized strings into a fifo queue
@@ -97,6 +105,34 @@ def background_music(speaker_flag):
       p.play()
 
 
+def background_light(light_flag):  
+
+  GPIO.output(port_id,GPIO.HIGH)
+  time.sleep(time_sec)
+  GPIO.output(port_id,GPIO.LOW)
+
+
+  while True:
+    input_value = GPIO.input(light_button)
+    if not light_flag.isSet():
+      while light_flag.isSet():
+        GPIO.output(port_id,GPIO.HIGH)
+        time.sleep(0.5)
+        GPIO.output(port_id,GPIO.LOW)
+        time.sleep(0.5)
+    elif input_value == False:
+      GPIO.output(port_id,GPIO.HIGH)
+      while c < 50:
+        if not light_flag.isSet():
+          break
+        time.sleep(0.1)
+        c += 1
+      GPIO.output(port_id,GPIO.LOW)
+
+
+    
+
+
 
 string_queue = queue.Queue()
 listening_thread = threading.Thread(target=listening, args=(string_queue,))
@@ -108,6 +144,8 @@ processing_thread.start()
 
 back_music_thread = threading.Thread(target=background_music, args=(speaker_flag,))
 back_music_thread.start()
+
+background_light
 
 
 '''a = 0
