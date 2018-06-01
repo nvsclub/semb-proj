@@ -9,8 +9,9 @@ import vlc
 
 
 pin_outs = [15, 16]
-choco_bar_motor = 15
-coke_motor = 16
+choco_bar_motor = 8
+coke_motor = 10
+gum_motor = 12
 
 hello = ['hello', 'alo']
 chocobar = ['chocobar', 'Google bar', 'chocolate']
