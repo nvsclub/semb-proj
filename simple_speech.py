@@ -156,9 +156,6 @@ def background_light(light_flag):
 ####   OPERATIONS FUNCTIONS   ####
 ##################################
 
-def check_money(type):
-
-    small_change =
 
 def turn_on(port_id, time_sec, resource_flag):
     resource_flag.wait()
@@ -168,7 +165,7 @@ def turn_on(port_id, time_sec, resource_flag):
     time.sleep(time_sec)
     GPIO.output(port_id, GPIO.LOW)
 
-    resource_flag.clear()
+    resource_flag.set()
 
 
 ##################################
@@ -194,8 +191,6 @@ light_flag = threading.Event()
 background_light_thread = threading.Thread(target=background_light, args=(light_flag,))
 background_light_thread.start()
 
-check_money_thread = threading.Thread(target=check_money, args=(0,))
-check_money_thread.start()
 
 '''a = 0
 while 1:
