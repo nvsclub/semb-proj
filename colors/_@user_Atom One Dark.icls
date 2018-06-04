@@ -4,7 +4,7 @@
     <property name="created">2018-06-01T21:50:54</property>
     <property name="ide">Python</property>
     <property name="ideVersion">2018.1.4.0.0</property>
-    <property name="modified">2018-06-03T17:18:18</property>
+    <property name="modified">2018-06-04T13:24:09</property>
     <property name="originalScheme">Atom One Dark</property>
   </metaInfo>
   <option name="LINE_SPACING" value="1.4" />
@@ -14,7 +14,7 @@
   </font>
   <font>
     <option name="EDITOR_FONT_NAME" value="Source Code Pro" />
-    <option name="EDITOR_FONT_SIZE" value="14" />
+    <option name="EDITOR_FONT_SIZE" value="13" />
   </font>
   <option name="CONSOLE_FONT_NAME" value="DejaVu Sans Mono" />
   <option name="CONSOLE_FONT_SIZE" value="12" />
